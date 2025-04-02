@@ -99,7 +99,7 @@ export default function LoginForm() {
           className="w-[600px] h-[600px] object-cover rounded-2xl md:ml-5"
         />
         <CardContent className="p-10 flex flex-col justify-center">
-          <h2 className="text-2xl font-semibold mb-6 text-center">Welcome</h2>
+          <h2 className="text-2xl font-semibold mb-6 text-center">Welcome{pathname.includes("seller") ? " Seller" : " Client"}</h2>
           <Formik
             initialValues={{
               username: "",
@@ -166,7 +166,7 @@ export default function LoginForm() {
                     if (decoded?.role === "seller") {
                       router.push("/seller-panel");
                     } else if (decoded?.role === "client") {
-                      router.push("/dashboard");
+                      router.push("/");
                     } else {
                       console.error("Role tanımlı değil");
                     }

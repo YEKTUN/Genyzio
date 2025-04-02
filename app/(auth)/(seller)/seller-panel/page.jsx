@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { useDecodedToken } from "@/components/utils/useDecodedToken";
 import { useAuthGuard } from "@/components/utils/useAuthGuard";
 import { clearCart } from "@/components/redux/slice/CartSlice";
+import Link from "next/link";
 
 const ProductPage = () => {
   const isLoading = useAuthGuard("/");
@@ -83,6 +84,8 @@ useEffect(() => {
 
   return (
     <div>
+      <Link href={"/"} className={"cursor-pointer  ml-4 hover:text-gray-400 active:text-gray-900"}>Anasayfa</Link>
+        <Button onClick={logout} variant={"destructive"} className={"cursor-pointer bg-red-500 hover:bg-red-300 hover:text-black active:bg-red-700  ml-4"}>Çıkış Yap</Button>
         <AlertModal
         message={error || "Successfull Logout"}
         type={error ? "failure" : "success"}
@@ -91,7 +94,7 @@ useEffect(() => {
       />
       <ProductGrid products={productList} onDelete={handleDelete} onEdit={handleEdit} onAdd={handleAdd} />
       <ProductDialog open={open} onOpenChange={setOpen} onSubmit={handleSubmit} initialData={editProduct} />
-      <Button onClick={logout} variant={"destructive"} className={"absolute bottom-4 right-4 cursor-pointer bg-indigo-500 hover:bg-indigo-300 hover:text-black active:bg-indigo-700 "}>Logout</Button>
+    
     </div>
   );
 };

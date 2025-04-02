@@ -5,6 +5,9 @@ const nextConfig = {
       config.infrastructureLogging = { level: "error" };
       return config;
     },
+    images: {
+      domains: ['cdn.pixabay.com'],
+    },
 };
 
 export default nextConfig;

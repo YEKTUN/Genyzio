@@ -11,9 +11,16 @@ import { ShoppingCart, Minus, Plus } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { useDecodedToken } from "@/components/utils/useDecodedToken";
-import { addToCart, fetchCart, removeFromCart } from "@/components/redux/slice/CartSlice";
+import {
+  addToCart,
+  clearAllCart,
+  fetchCart,
+  removeFromCart,
+} from "@/components/redux/slice/CartSlice";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import { checkoutAndGenerateReceipt } from "@/components/redux/slice/ReceiptSlice";
 
 export default function CartSheet() {
   const decoded = useDecodedToken();
@@ -51,12 +58,14 @@ export default function CartSheet() {
           <SheetTitle>Sepetim</SheetTitle>
         </SheetHeader>
         <div className="mt-4 space-y-4 p-4">
-          {decoded&&items && items.length > 0 ? (
+          {decoded && items && items.length > 0 ? (
             <>
               {items.map((item, index) => (
                 <div key={index} className="flex items-center gap-3 space-x-2">
                   <img
-                    src={`${process.env.NEXT_PUBLIC_API_URL}${item.product?.images?.[0] || ""}`}
+                    src={`${process.env.NEXT_PUBLIC_API_URL}${
+                      item.product?.images?.[0] || ""
+                    }`}
                     alt={item.product?.title}
                     className="w-14 h-14 object-cover rounded"
                   />
@@ -71,7 +80,6 @@ export default function CartSheet() {
                         size="icon"
                         variant="outline"
                         onClick={() => handleRemove(item.product._id)}
-                        disabled={loading}
                       >
                         <Minus className="w-4 h-4" />
                       </Button>
@@ -80,7 +88,6 @@ export default function CartSheet() {
                         size="icon"
                         variant="outline"
                         onClick={() => handleAdd(item.product._id)}
-                        disabled={loading}
                       >
                         <Plus className="w-4 h-4" />
                       </Button>
@@ -92,8 +99,30 @@ export default function CartSheet() {
                 <span>Toplam:</span>
                 <span>{totalPrice}₺</span>
               </div>
-              <Button asChild className="w-full mt-4">
-                <Link href="/cart">Siparişi Onayla</Link>
+              <Button
+                onClick={async () => {
+                  if (items.length === 0) {
+                    toast.error("Sepetiniz boş, sipariş veremezsiniz.");
+                    return;
+                  }
+                  try {
+                    await dispatch(
+                      checkoutAndGenerateReceipt(decoded.id)
+                    ).unwrap();
+                    await dispatch(clearAllCart(decoded.id))
+                    toast.success("Siparişiniz başarıyla oluşturuldu.",{
+                      duration: 1000,});
+                  } catch (error) {
+                    toast.error(
+                      error?.message ||
+                        "Sipariş oluşturulamadı. Lütfen tekrar deneyin.",{
+                          duration: 1000,}
+                    );
+                  }
+                }}
+                className="w-full mt-4 hover:bg-green-600 active:bg-green-300 active:text-black bg-green-800 text-white cursor-pointer"
+              >
+                SİPARİŞİ ONAYLA
               </Button>
             </>
           ) : (

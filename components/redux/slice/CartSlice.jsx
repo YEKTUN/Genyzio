@@ -2,20 +2,19 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axiosInstance from "@/components/utils/axiosInstance";
 
 // 🟢 Sepeti getir
-export const fetchCart = createAsyncThunk(
-    "cart/fetchCart",
-    async (userId) => {
-      const res = await axiosInstance.get(`/cart/get-all/${userId}`);
-      return res.data;
-    }
-  );
-  
+export const fetchCart = createAsyncThunk("cart/fetchCart", async (userId) => {
+  const res = await axiosInstance.get(`/cart/get-all/${userId}`);
+  return res.data;
+});
 
 // ➕ Sepete ürün ekle
 export const addToCart = createAsyncThunk(
   "cart/addToCart",
   async ({ productId, userId }) => {
-    const res = await axiosInstance.post("/cart/add-to-cart", { productId, userId });
+    const res = await axiosInstance.post("/cart/add-to-cart", {
+      productId,
+      userId,
+    });
     return res.data;
   }
 );
@@ -24,8 +23,24 @@ export const addToCart = createAsyncThunk(
 export const removeFromCart = createAsyncThunk(
   "cart/removeFromCart",
   async ({ productId, userId }) => {
-    const res = await axiosInstance.post("/cart/remove-from-cart", { productId, userId });
+    const res = await axiosInstance.post("/cart/remove-from-cart", {
+      productId,
+      userId,
+    });
     return res.data;
+  }
+);
+export const clearAllCart = createAsyncThunk(
+  "cart/clearCart",
+  async (userId, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.delete(
+        `/cart/clear-cart/${userId}`
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
   }
 );
 
@@ -55,7 +70,6 @@ const cartSlice = createSlice({
         state.items = action.payload.items;
         state.totalPrice = action.payload.totalPrice;
         console.log("action.payload", action.payload.items);
-        
       })
       .addCase(fetchCart.rejected, (state, action) => {
         state.loading = false;
@@ -90,6 +104,20 @@ const cartSlice = createSlice({
       .addCase(removeFromCart.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
+      })
+
+      .addCase(clearAllCart.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(clearAllCart.fulfilled, (state) => {
+        state.loading = false;
+        state.items = [];
+        state.totalPrice = 0;
+      })
+      .addCase(clearAllCart.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload.message;
       });
   },
 });

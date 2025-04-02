@@ -22,6 +22,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Command, CommandItem, CommandList } from "@/components/ui/command";
+import { useRouter } from "next/navigation";
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -36,6 +37,7 @@ export default function Navbar() {
   const [searchResults, setSearchResults] = useState([]);
 
   const decoded = useDecodedToken();
+  const router=useRouter();
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -81,6 +83,14 @@ export default function Navbar() {
     localStorage.removeItem("token");
     setUser(null);
     dispatch(clearCart());
+    if(decoded?.role==="seller")
+      router.push("/seller-login");
+    else if(decoded?.role==="client")
+      router.push("/client-login");
+   
+    
+   
+    
   };
 
   return (
@@ -147,7 +157,10 @@ export default function Navbar() {
 
       {/* Sağ Menü */}
       <div className="flex items-center gap-4">
+       
+
         <CartSheet />
+       
         <DropdownMenu>
           <DropdownMenuTrigger className="border-1 rounded-full p-1 hover:bg-gray-300 cursor-pointer active:bg-gray-200">
             <User />
@@ -167,7 +180,7 @@ export default function Navbar() {
                     <Link href="/orders">Siparişlerim</Link>
                   </DropdownMenuItem>
                 )}
-                <DropdownMenuItem onClick={logout}>Çıkış Yap</DropdownMenuItem>
+                <DropdownMenuItem className={"cursor-pointer"} onClick={logout}>Çıkış Yap</DropdownMenuItem>
               </>
             ) : (
               <>

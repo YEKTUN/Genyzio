@@ -33,7 +33,7 @@ import { addToCart, fetchCart } from "@/components/redux/slice/CartSlice";
 import { useDecodedToken } from "@/components/utils/useDecodedToken";
 
 export default function ProductFilterPage() {
-  const [price, setPrice] = useState([0, 1000]);
+  const [price, setPrice] = useState([0, 15000]);
   const [sort, setSort] = useState("");
   const [category, setCategory] = useState("");
   const [search, setSearch] = useState("");
@@ -170,16 +170,24 @@ export default function ProductFilterPage() {
           {productList.map((product) => (
             <div
               key={product._id}
-              className="border p-4 rounded-lg hover:shadow-md transition"
+              className="border p-4 rounded-lg hover:shadow-md transition flex flex-col justify-between"
             >
-              <img
-                src={`${process.env.NEXT_PUBLIC_API_URL}${product.images[0]}`}
-                alt={product.title}
-                className="w-full h-40 object-cover mb-2 rounded"
-              />
+            <div>
+            <Link
+                href={`/product/${encodeURIComponent(
+                  product.title.toLowerCase().replace(/\s+/g, "-")
+                )}?productId=${product._id}`}
+              >
+                <img
+                  src={`${process.env.NEXT_PUBLIC_API_URL}${product.images[0]}`}
+                  alt={product.title}
+                  className="w-full h-40 object-cover mb-2 rounded"
+                />
+              </Link>
               <h3 className="font-semibold">{product.title}</h3>
               <p className="text-sm text-gray-600">{product.category}</p>
               <p className="text-primary font-bold">{product.price}₺</p>
+            </div>
               <Button
                 onClick={() => {
                   if (!decoded) {
@@ -191,7 +199,8 @@ export default function ProductFilterPage() {
                         }
                       );
                     }
-                  }else{
+                  }
+                  if (decoded && decoded.role === "seller") {
                     toast.error(
                       "Sepete ekleme yapabilmek müşteri olmalısınız ",
                       {
@@ -199,6 +208,7 @@ export default function ProductFilterPage() {
                       }
                     );
                   }
+
                   if (decoded.role === "client") {
                     dispatch(
                       addToCart({ productId: product._id, userId: decoded.id })
@@ -206,10 +216,9 @@ export default function ProductFilterPage() {
                     toast.success("Ürün sepete eklendi", {
                       duration: 1000,
                     });
-                  } 
-                
+                  }
                 }}
-                className="w-full mt-4"
+                className="w-full mt-4 cursor-pointer "
               >
                 Sepete Ekle
               </Button>

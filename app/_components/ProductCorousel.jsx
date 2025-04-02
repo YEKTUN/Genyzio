@@ -7,9 +7,9 @@ import Autoplay from "embla-carousel-autoplay";
 
 const products = [
   { id: 1, name: "Ürün 1", image: "/image/Slide1.jpg" },
-  { id: 2, name: "Ürün 2", image: "/image/Slide1.jpg" },
-  { id: 3, name: "Ürün 3", image: "/image/Slide1.jpg" },
-  { id: 4, name: "Ürün 4", image: "/image/Slide1.jpg" },
+  { id: 2, name: "Ürün 2", image: "/image/Slide2.png" },
+  { id: 3, name: "Ürün 3", image: "/image/Slide3.png" },
+  { id: 4, name: "Ürün 4", image: "/image/Slide4.png" },
 ];
 
 export default function ProductCarousel() {

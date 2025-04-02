@@ -17,9 +17,9 @@ export default function Footer() {
 
         {/* Linkler */}
         <div className="flex gap-6">
-          <Link href="/about" className="text-gray-700 hover:text-primary">Hakkımızda</Link>
-          <Link href="/contact" className="text-gray-700 hover:text-primary">İletişim</Link>
-          <Link href="/privacy" className="text-gray-700 hover:text-primary">Gizlilik</Link>
+          <Link href="/" className="text-gray-700 hover:text-primary">Hakkımızda</Link>
+          <Link href="/" className="text-gray-700 hover:text-primary">İletişim</Link>
+          <Link href="/" className="text-gray-700 hover:text-primary">Gizlilik</Link>
         </div>
 
         {/* Sosyal Medya */}
